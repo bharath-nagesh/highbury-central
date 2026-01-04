@@ -44,6 +44,8 @@ A super modern web application built with Angular to track Arsenal FC related co
 - **TypeScript**: Type-safe development
 - **SCSS**: Advanced styling with mixins and CSS variables
 - **Modern CSS**: Backdrop filters, gradients, animations, and glassmorphism
+- **RxJS**: Reactive programming for data management
+- **HttpClient**: API integration ready
 
 ## Getting Started
 
@@ -111,6 +113,44 @@ The application uses a comprehensive design system with:
 - **Utility Classes**: Pre-built classes for common patterns
 - **Animation Library**: Smooth transitions and keyframe animations
 - **Responsive Grid System**: Mobile-first responsive layouts
+
+## Data Sources & API Integration
+
+The application is built with a service-based architecture that makes it easy to integrate with real football data APIs.
+
+### Current Implementation
+
+Currently using **mock data** through the `FootballData` service for demonstration purposes. The mock data includes:
+- Match fixtures and results
+- Arsenal news articles
+- Transfer rumors
+- Match statistics
+
+### Ready for Real Data
+
+The app is designed to easily integrate with credible football data sources:
+
+- **Football-Data.org** - Free tier available for fixtures and results
+- **API-Football (RapidAPI)** - Comprehensive football data
+- **TheSportsDB** - Free basic football data
+- **NewsAPI** - For Arsenal news articles
+
+### How to Integrate Real APIs
+
+See **[API_INTEGRATION.md](./API_INTEGRATION.md)** for detailed instructions on:
+- Setting up API keys
+- Integrating with Football-Data.org
+- Connecting to other data sources
+- Handling CORS and rate limiting
+- Best practices for production
+
+**Quick Start with Real Data:**
+1. Get a free API key from [Football-Data.org](https://www.football-data.org)
+2. Open `src/app/services/football-data.ts`
+3. Replace `YOUR_API_KEY_HERE` with your API key
+4. Uncomment the real API calls in the service methods
+
+The service includes automatic fallback to mock data if APIs are unavailable, ensuring the app always works.
 
 ## Future Enhancements
 

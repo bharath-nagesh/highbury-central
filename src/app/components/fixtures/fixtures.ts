@@ -1,19 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-interface Match {
-  id: number;
-  homeTeam: string;
-  awayTeam: string;
-  homeScore?: number;
-  awayScore?: number;
-  date: Date;
-  competition: string;
-  venue: string;
-  status: 'upcoming' | 'live' | 'completed';
-  homeLogo: string;
-  awayLogo: string;
-}
+import { FootballData, Match } from '../../services/football-data';
 
 @Component({
   selector: 'app-fixtures',
@@ -27,134 +14,26 @@ export class Fixtures implements OnInit {
   previousMatches: Match[] = [];
   loading = true;
 
+  constructor(private footballData: FootballData) {}
+
   ngOnInit() {
-    // Load mock data immediately
-    this.loadMatches();
-    this.loading = false;
+    // Load data from service
+    this.footballData.getMatches().subscribe({
+      next: (matches) => {
+        this.loadMatches(matches);
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading matches:', error);
+        this.loading = false;
+      }
+    });
   }
 
-  loadMatches() {
-    const allMatches = this.getMockMatches();
-
+  loadMatches(allMatches: Match[]) {
     this.liveMatch = allMatches.find(m => m.status === 'live') || null;
     this.upcomingMatches = allMatches.filter(m => m.status === 'upcoming');
     this.previousMatches = allMatches.filter(m => m.status === 'completed');
-  }
-
-  getMockMatches(): Match[] {
-    return [
-      {
-        id: 1,
-        homeTeam: 'Arsenal',
-        awayTeam: 'Manchester City',
-        homeScore: 2,
-        awayScore: 1,
-        date: new Date('2026-01-04T15:00:00'),
-        competition: 'Premier League',
-        venue: 'Emirates Stadium',
-        status: 'live',
-        homeLogo: '🔴',
-        awayLogo: '🔵'
-      },
-      {
-        id: 2,
-        homeTeam: 'Liverpool',
-        awayTeam: 'Arsenal',
-        date: new Date('2026-01-08T20:00:00'),
-        competition: 'Premier League',
-        venue: 'Anfield',
-        status: 'upcoming',
-        homeLogo: '🔴',
-        awayLogo: '🔴'
-      },
-      {
-        id: 3,
-        homeTeam: 'Arsenal',
-        awayTeam: 'Chelsea',
-        date: new Date('2026-01-12T14:00:00'),
-        competition: 'Premier League',
-        venue: 'Emirates Stadium',
-        status: 'upcoming',
-        homeLogo: '🔴',
-        awayLogo: '🔵'
-      },
-      {
-        id: 4,
-        homeTeam: 'Arsenal',
-        awayTeam: 'Newcastle United',
-        date: new Date('2026-01-15T19:45:00'),
-        competition: 'FA Cup',
-        venue: 'Emirates Stadium',
-        status: 'upcoming',
-        homeLogo: '🔴',
-        awayLogo: '⚫'
-      },
-      {
-        id: 5,
-        homeTeam: 'Arsenal',
-        awayTeam: 'Brighton',
-        homeScore: 3,
-        awayScore: 1,
-        date: new Date('2026-01-01T16:30:00'),
-        competition: 'Premier League',
-        venue: 'Emirates Stadium',
-        status: 'completed',
-        homeLogo: '🔴',
-        awayLogo: '🔵'
-      },
-      {
-        id: 6,
-        homeTeam: 'Tottenham',
-        awayTeam: 'Arsenal',
-        homeScore: 1,
-        awayScore: 2,
-        date: new Date('2025-12-28T12:30:00'),
-        competition: 'Premier League',
-        venue: 'Tottenham Hotspur Stadium',
-        status: 'completed',
-        homeLogo: '⚪',
-        awayLogo: '🔴'
-      },
-      {
-        id: 7,
-        homeTeam: 'Arsenal',
-        awayTeam: 'Aston Villa',
-        homeScore: 2,
-        awayScore: 0,
-        date: new Date('2025-12-22T15:00:00'),
-        competition: 'Premier League',
-        venue: 'Emirates Stadium',
-        status: 'completed',
-        homeLogo: '🔴',
-        awayLogo: '🟣'
-      },
-      {
-        id: 8,
-        homeTeam: 'Manchester United',
-        awayTeam: 'Arsenal',
-        homeScore: 0,
-        awayScore: 1,
-        date: new Date('2025-12-18T20:00:00'),
-        competition: 'Premier League',
-        venue: 'Old Trafford',
-        status: 'completed',
-        homeLogo: '🔴',
-        awayLogo: '🔴'
-      },
-      {
-        id: 9,
-        homeTeam: 'Arsenal',
-        awayTeam: 'Everton',
-        homeScore: 4,
-        awayScore: 1,
-        date: new Date('2025-12-14T19:30:00'),
-        competition: 'Premier League',
-        venue: 'Emirates Stadium',
-        status: 'completed',
-        homeLogo: '🔴',
-        awayLogo: '🔵'
-      }
-    ];
   }
 
   formatDate(date: Date): string {
