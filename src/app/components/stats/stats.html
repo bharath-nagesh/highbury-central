@@ -1,0 +1,193 @@
+<div class="stats-container">
+  <div class="section-header glass-card">
+    <h2 class="section-title">
+      <span class="text-gradient">Match</span> Statistics
+    </h2>
+    <p class="section-subtitle">Detailed performance analysis</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading match statistics...</p>
+    </div>
+  } @else {
+    @if (matchInfo && arsenalStats && opponentStats) {
+      <!-- Match Info Header -->
+      <div class="match-info-card glass-card">
+        <div class="match-header">
+          <div class="competition-badge">{{ matchInfo.competition }}</div>
+          <div class="venue">📍 {{ matchInfo.venue }}</div>
+        </div>
+        <div class="match-result">
+          <div class="team arsenal">
+            <span class="team-name">Arsenal</span>
+          </div>
+          <div class="score-display">
+            <span class="score">{{ matchInfo.result }}</span>
+            <span class="date">{{ matchInfo.date | date: 'short' }}</span>
+          </div>
+          <div class="team opponent">
+            <span class="team-name">{{ matchInfo.opponent }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Performers -->
+      <div class="top-performers">
+        <h3 class="section-subtitle">Top Performers</h3>
+        <div class="performers-grid">
+          @for (player of topPerformers; track player.name) {
+            <div class="player-card glass-card">
+              <div class="player-image">
+                <img [src]="player.imageUrl" [alt]="player.name">
+                <div class="player-number">{{ player.number }}</div>
+              </div>
+              <div class="player-info">
+                <h4 class="player-name">{{ player.name }}</h4>
+                <span class="player-position">{{ player.position }}</span>
+              </div>
+              <div class="player-stats-summary">
+                <div class="stat-item">
+                  <span class="stat-icon">⚽</span>
+                  <span class="stat-value">{{ player.goals }}</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-icon">🎯</span>
+                  <span class="stat-value">{{ player.assists }}</span>
+                </div>
+              </div>
+              <div class="player-rating" [style.background]="getRatingColor(player.rating)">
+                {{ player.rating }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Match Statistics Comparison -->
+      <div class="stats-comparison">
+        <h3 class="section-subtitle">Match Statistics</h3>
+
+        <!-- Possession -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.possession }}%</span>
+          <div class="stat-info">
+            <span class="stat-name">Possession</span>
+            <div class="stat-bar-container">
+              <div class="stat-bar arsenal" [style.width.%]="arsenalStats.possession"></div>
+              <div class="stat-bar opponent" [style.width.%]="opponentStats.possession"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.possession }}%</span>
+        </div>
+
+        <!-- Shots -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.shots }}</span>
+          <div class="stat-info">
+            <span class="stat-name">Shots</span>
+            <div class="stat-comparison-bar">
+              <div class="bar-side arsenal" [style.flex-grow]="arsenalStats.shots"></div>
+              <div class="bar-side opponent" [style.flex-grow]="opponentStats.shots"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.shots }}</span>
+        </div>
+
+        <!-- Shots on Target -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.shotsOnTarget }}</span>
+          <div class="stat-info">
+            <span class="stat-name">Shots on Target</span>
+            <div class="stat-comparison-bar">
+              <div class="bar-side arsenal" [style.flex-grow]="arsenalStats.shotsOnTarget"></div>
+              <div class="bar-side opponent" [style.flex-grow]="opponentStats.shotsOnTarget"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.shotsOnTarget }}</span>
+        </div>
+
+        <!-- Pass Accuracy -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.passAccuracy }}%</span>
+          <div class="stat-info">
+            <span class="stat-name">Pass Accuracy</span>
+            <div class="stat-bar-container">
+              <div class="accuracy-bar arsenal" [style.width.%]="arsenalStats.passAccuracy"></div>
+            </div>
+            <div class="stat-bar-container">
+              <div class="accuracy-bar opponent" [style.width.%]="opponentStats.passAccuracy"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.passAccuracy }}%</span>
+        </div>
+
+        <!-- Passes -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.passes }}</span>
+          <div class="stat-info">
+            <span class="stat-name">Passes</span>
+            <div class="stat-comparison-bar">
+              <div class="bar-side arsenal" [style.flex-grow]="arsenalStats.passes"></div>
+              <div class="bar-side opponent" [style.flex-grow]="opponentStats.passes"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.passes }}</span>
+        </div>
+
+        <!-- Tackles -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.tackles }}</span>
+          <div class="stat-info">
+            <span class="stat-name">Tackles</span>
+            <div class="stat-comparison-bar">
+              <div class="bar-side arsenal" [style.flex-grow]="arsenalStats.tackles"></div>
+              <div class="bar-side opponent" [style.flex-grow]="opponentStats.tackles"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.tackles }}</span>
+        </div>
+
+        <!-- Corners -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.corners }}</span>
+          <div class="stat-info">
+            <span class="stat-name">Corners</span>
+            <div class="stat-comparison-bar">
+              <div class="bar-side arsenal" [style.flex-grow]="arsenalStats.corners"></div>
+              <div class="bar-side opponent" [style.flex-grow]="opponentStats.corners"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.corners }}</span>
+        </div>
+
+        <!-- Fouls -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.fouls }}</span>
+          <div class="stat-info">
+            <span class="stat-name">Fouls</span>
+            <div class="stat-comparison-bar">
+              <div class="bar-side arsenal" [style.flex-grow]="arsenalStats.fouls"></div>
+              <div class="bar-side opponent" [style.flex-grow]="opponentStats.fouls"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.fouls }}</span>
+        </div>
+
+        <!-- Yellow Cards -->
+        <div class="stat-row glass-card">
+          <span class="stat-label arsenal">{{ arsenalStats.yellowCards }}</span>
+          <div class="stat-info">
+            <span class="stat-name">Yellow Cards</span>
+            <div class="stat-comparison-bar">
+              <div class="bar-side arsenal warning" [style.flex-grow]="arsenalStats.yellowCards || 0.5"></div>
+              <div class="bar-side opponent warning" [style.flex-grow]="opponentStats.yellowCards || 0.5"></div>
+            </div>
+          </div>
+          <span class="stat-label opponent">{{ opponentStats.yellowCards }}</span>
+        </div>
+      </div>
+    }
+  }
+</div>

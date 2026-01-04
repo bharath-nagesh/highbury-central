@@ -1,0 +1,147 @@
+<div class="fixtures-container">
+  <div class="section-header glass-card">
+    <h2 class="section-title">
+      <span class="text-gradient">Fixtures</span> & Results
+    </h2>
+    <p class="section-subtitle">Track Arsenal's journey through the season</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading fixtures...</p>
+    </div>
+  } @else {
+    <!-- Live Match -->
+    @if (liveMatch) {
+      <div class="live-match-section">
+        <div class="section-label">
+          <span class="live-indicator">🔴</span>
+          <h3>LIVE NOW</h3>
+        </div>
+        <div class="match-card glass-card live">
+          <div class="match-header">
+            <span class="competition-badge">{{ liveMatch.competition }}</span>
+            <span class="live-badge">LIVE</span>
+          </div>
+
+          <div class="match-teams">
+            <div class="team home">
+              <span class="team-logo">{{ liveMatch.homeLogo }}</span>
+              <span class="team-name" [class.arsenal]="liveMatch.homeTeam === 'Arsenal'">
+                {{ liveMatch.homeTeam }}
+              </span>
+            </div>
+
+            <div class="match-score">
+              <span class="score">{{ liveMatch.homeScore }}</span>
+              <span class="separator">-</span>
+              <span class="score">{{ liveMatch.awayScore }}</span>
+            </div>
+
+            <div class="team away">
+              <span class="team-name" [class.arsenal]="liveMatch.awayTeam === 'Arsenal'">
+                {{ liveMatch.awayTeam }}
+              </span>
+              <span class="team-logo">{{ liveMatch.awayLogo }}</span>
+            </div>
+          </div>
+
+          <div class="match-info">
+            <span class="venue">📍 {{ liveMatch.venue }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Upcoming Matches -->
+    <div class="upcoming-section">
+      <div class="section-label">
+        <h3>Upcoming Fixtures</h3>
+      </div>
+      <div class="matches-list">
+        @for (match of upcomingMatches; track match.id) {
+          <div class="match-card glass-card">
+            <div class="match-header">
+              <span class="competition-badge">{{ match.competition }}</span>
+              <span class="match-date">{{ formatDate(match.date) }}</span>
+            </div>
+
+            <div class="match-teams">
+              <div class="team home">
+                <span class="team-logo">{{ match.homeLogo }}</span>
+                <span class="team-name" [class.arsenal]="match.homeTeam === 'Arsenal'">
+                  {{ match.homeTeam }}
+                </span>
+              </div>
+
+              <div class="match-time">
+                <span class="time">{{ formatTime(match.date) }}</span>
+                <span class="vs">VS</span>
+              </div>
+
+              <div class="team away">
+                <span class="team-name" [class.arsenal]="match.awayTeam === 'Arsenal'">
+                  {{ match.awayTeam }}
+                </span>
+                <span class="team-logo">{{ match.awayLogo }}</span>
+              </div>
+            </div>
+
+            <div class="match-info">
+              <span class="venue">📍 {{ match.venue }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Previous Results -->
+    <div class="previous-section">
+      <div class="section-label">
+        <h3>Previous Results</h3>
+        <p class="scroll-hint">Scroll to see more</p>
+      </div>
+      <div class="matches-list scrollable">
+        @for (match of previousMatches; track match.id) {
+          <div class="match-card glass-card result" [class]="getResultClass(match)">
+            <div class="result-indicator">
+              <span class="result-badge">{{ getMatchResult(match) }}</span>
+            </div>
+
+            <div class="match-header">
+              <span class="competition-badge">{{ match.competition }}</span>
+              <span class="match-date">{{ formatDate(match.date) }}</span>
+            </div>
+
+            <div class="match-teams">
+              <div class="team home">
+                <span class="team-logo">{{ match.homeLogo }}</span>
+                <span class="team-name" [class.arsenal]="match.homeTeam === 'Arsenal'">
+                  {{ match.homeTeam }}
+                </span>
+              </div>
+
+              <div class="match-score">
+                <span class="score">{{ match.homeScore }}</span>
+                <span class="separator">-</span>
+                <span class="score">{{ match.awayScore }}</span>
+              </div>
+
+              <div class="team away">
+                <span class="team-name" [class.arsenal]="match.awayTeam === 'Arsenal'">
+                  {{ match.awayTeam }}
+                </span>
+                <span class="team-logo">{{ match.awayLogo }}</span>
+              </div>
+            </div>
+
+            <div class="match-info">
+              <span class="venue">📍 {{ match.venue }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

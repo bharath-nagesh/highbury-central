@@ -1,0 +1,48 @@
+<div class="news-container">
+  <div class="section-header glass-card">
+    <h2 class="section-title">
+      <span class="text-gradient">Latest</span> News
+    </h2>
+    <p class="section-subtitle">Stay updated with the latest Arsenal FC news and updates</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading latest news...</p>
+    </div>
+  } @else {
+    <div class="news-grid">
+      @for (item of newsItems; track item.id) {
+        <article class="news-card glass-card">
+          <div class="news-image-container">
+            <img [src]="item.imageUrl" [alt]="item.title" class="news-image">
+            <div class="news-category" [style.background]="getCategoryColor(item.category)">
+              {{ item.category }}
+            </div>
+          </div>
+
+          <div class="news-content">
+            <h3 class="news-title">{{ item.title }}</h3>
+            <p class="news-excerpt">{{ item.excerpt }}</p>
+
+            <div class="news-meta">
+              <div class="author-info">
+                <span class="author-icon">✍️</span>
+                <span class="author-name">{{ item.author }}</span>
+              </div>
+              <div class="publish-date">
+                <span class="date-icon">📅</span>
+                <span>{{ formatDate(item.publishedAt) }}</span>
+              </div>
+            </div>
+
+            <button class="read-more-btn arsenal-button">
+              Read More →
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

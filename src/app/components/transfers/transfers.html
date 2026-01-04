@@ -1,0 +1,157 @@
+<div class="transfers-container">
+  <div class="section-header glass-card">
+    <h2 class="section-title">
+      <span class="text-gradient">Transfer</span> Market
+    </h2>
+    <p class="section-subtitle">Track potential player movements</p>
+  </div>
+
+  @if (loading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading transfer news...</p>
+    </div>
+  } @else {
+    <!-- Transfer Type Tabs -->
+    <div class="transfer-tabs glass-card">
+      <button
+        class="transfer-tab"
+        [class.active]="activeTab === 'incoming'"
+        (click)="setActiveTab('incoming')"
+      >
+        <span class="tab-icon">⬇️</span>
+        <span class="tab-text">Incoming</span>
+        <span class="tab-count">{{ incomingTransfers.length }}</span>
+      </button>
+      <button
+        class="transfer-tab"
+        [class.active]="activeTab === 'outgoing'"
+        (click)="setActiveTab('outgoing')"
+      >
+        <span class="tab-icon">⬆️</span>
+        <span class="tab-text">Outgoing</span>
+        <span class="tab-count">{{ outgoingTransfers.length }}</span>
+      </button>
+    </div>
+
+    <!-- Incoming Transfers -->
+    @if (activeTab === 'incoming') {
+      <div class="transfers-list">
+        @for (transfer of incomingTransfers; track transfer.id) {
+          <div class="transfer-card glass-card incoming">
+            <div class="transfer-header">
+              <div class="player-image">
+                <img [src]="transfer.imageUrl" [alt]="transfer.playerName">
+              </div>
+              <div class="player-info">
+                <h3 class="player-name">{{ transfer.playerName }}</h3>
+                <div class="player-details">
+                  <span class="position">{{ transfer.position }}</span>
+                  <span class="separator">•</span>
+                  <span class="age">{{ transfer.age }} years</span>
+                </div>
+              </div>
+              <div class="transfer-status">
+                <span class="status-badge" [style.background]="getStatusColor(transfer.status)">
+                  {{ getStatusLabel(transfer.status) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="transfer-details">
+              <div class="club-movement">
+                <div class="club from">
+                  <span class="club-label">From</span>
+                  <span class="club-name">{{ transfer.fromClub }}</span>
+                </div>
+                <div class="arrow">→</div>
+                <div class="club to">
+                  <span class="club-label">To</span>
+                  <span class="club-name arsenal">{{ transfer.toClub }}</span>
+                </div>
+              </div>
+
+              <div class="transfer-meta">
+                <div class="fee">
+                  <span class="label">Transfer Fee</span>
+                  <span class="value">{{ transfer.fee }}</span>
+                </div>
+                <div class="probability">
+                  <span class="label">Probability</span>
+                  <div class="probability-bar">
+                    <div
+                      class="probability-fill"
+                      [style.width.%]="transfer.probability"
+                      [style.background]="getProbabilityColor(transfer.probability)"
+                    ></div>
+                    <span class="probability-text">{{ transfer.probability }}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Outgoing Transfers -->
+    @if (activeTab === 'outgoing') {
+      <div class="transfers-list">
+        @for (transfer of outgoingTransfers; track transfer.id) {
+          <div class="transfer-card glass-card outgoing">
+            <div class="transfer-header">
+              <div class="player-image">
+                <img [src]="transfer.imageUrl" [alt]="transfer.playerName">
+              </div>
+              <div class="player-info">
+                <h3 class="player-name">{{ transfer.playerName }}</h3>
+                <div class="player-details">
+                  <span class="position">{{ transfer.position }}</span>
+                  <span class="separator">•</span>
+                  <span class="age">{{ transfer.age }} years</span>
+                </div>
+              </div>
+              <div class="transfer-status">
+                <span class="status-badge" [style.background]="getStatusColor(transfer.status)">
+                  {{ getStatusLabel(transfer.status) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="transfer-details">
+              <div class="club-movement">
+                <div class="club from">
+                  <span class="club-label">From</span>
+                  <span class="club-name arsenal">{{ transfer.fromClub }}</span>
+                </div>
+                <div class="arrow">→</div>
+                <div class="club to">
+                  <span class="club-label">To</span>
+                  <span class="club-name">{{ transfer.toClub }}</span>
+                </div>
+              </div>
+
+              <div class="transfer-meta">
+                <div class="fee">
+                  <span class="label">Transfer Fee</span>
+                  <span class="value">{{ transfer.fee }}</span>
+                </div>
+                <div class="probability">
+                  <span class="label">Probability</span>
+                  <div class="probability-bar">
+                    <div
+                      class="probability-fill"
+                      [style.width.%]="transfer.probability"
+                      [style.background]="getProbabilityColor(transfer.probability)"
+                    ></div>
+                    <span class="probability-text">{{ transfer.probability }}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

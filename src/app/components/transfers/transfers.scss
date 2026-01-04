@@ -1,0 +1,359 @@
+.transfers-container {
+  .section-header {
+    padding: 32px;
+    margin-bottom: 32px;
+    text-align: center;
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .section-subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin: 0;
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    gap: 24px;
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--arsenal-red);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+  }
+
+  .transfer-tabs {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 32px;
+
+    .transfer-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 18px 32px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      .tab-icon {
+        font-size: 1.5rem;
+      }
+
+      .tab-count {
+        padding: 4px 10px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        transform: translateY(-2px);
+      }
+
+      &.active {
+        background: linear-gradient(135deg, rgba(239, 1, 7, 0.2) 0%, rgba(199, 0, 9, 0.2) 100%);
+        border-color: rgba(239, 1, 7, 0.4);
+        color: var(--text-primary);
+        box-shadow:
+          0 4px 16px rgba(239, 1, 7, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+        .tab-text {
+          background: var(--accent-gradient);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .tab-count {
+          background: rgba(239, 1, 7, 0.3);
+        }
+      }
+    }
+  }
+
+  .transfers-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  .transfer-card {
+    padding: 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &.incoming {
+      border-left: 4px solid #00D084;
+    }
+
+    &.outgoing {
+      border-left: 4px solid #FF3B30;
+    }
+
+    .transfer-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      .player-image {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        flex-shrink: 0;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .player-info {
+        flex: 1;
+
+        .player-name {
+          font-size: 1.3rem;
+          font-weight: 700;
+          color: var(--text-primary);
+          margin: 0 0 6px 0;
+        }
+
+        .player-details {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.9rem;
+          color: var(--text-tertiary);
+
+          .position {
+            color: var(--text-secondary);
+            font-weight: 500;
+          }
+
+          .separator {
+            color: var(--text-tertiary);
+          }
+        }
+      }
+
+      .transfer-status {
+        .status-badge {
+          padding: 6px 14px;
+          border-radius: 20px;
+          color: white;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+      }
+    }
+
+    .transfer-details {
+      .club-movement {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+
+        .club {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+
+          &.from {
+            text-align: left;
+          }
+
+          &.to {
+            text-align: right;
+          }
+
+          .club-label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+          }
+
+          .club-name {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+
+            &.arsenal {
+              background: var(--accent-gradient);
+              -webkit-background-clip: text;
+              -webkit-text-fill-color: transparent;
+              background-clip: text;
+              font-weight: 700;
+            }
+          }
+        }
+
+        .arrow {
+          font-size: 1.5rem;
+          color: var(--arsenal-red);
+          font-weight: 700;
+        }
+      }
+
+      .transfer-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+
+        .fee,
+        .probability {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+
+          .label {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+          }
+
+          .value {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            font-weight: 700;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+          }
+        }
+
+        .probability {
+          .probability-bar {
+            position: relative;
+            width: 100%;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            .probability-fill {
+              height: 100%;
+              transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+              border-radius: 16px;
+            }
+
+            .probability-text {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              font-size: 0.85rem;
+              font-weight: 700;
+              color: white;
+              text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .transfers-container {
+    .section-header {
+      padding: 24px 16px;
+
+      .section-title {
+        font-size: 2rem;
+      }
+    }
+
+    .transfer-tabs {
+      flex-direction: column;
+      gap: 8px;
+
+      .transfer-tab {
+        padding: 14px 24px;
+      }
+    }
+
+    .transfers-list {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .transfer-card {
+      .transfer-header {
+        .player-image {
+          width: 60px;
+          height: 60px;
+        }
+
+        .player-info .player-name {
+          font-size: 1.1rem;
+        }
+      }
+
+      .transfer-details {
+        .club-movement {
+          padding: 16px;
+        }
+
+        .transfer-meta {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+      }
+    }
+  }
+}

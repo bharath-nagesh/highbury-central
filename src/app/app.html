@@ -1,0 +1,34 @@
+<div class="app-container">
+  <!-- Header -->
+  <header class="header glass-card liquid-glass">
+    <div class="header-content">
+      <div class="logo-section">
+        <h1 class="logo-text">
+          <span class="text-gradient">Arsenal</span>
+          <span class="gold-gradient">FC Tracker</span>
+        </h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="tab-navigation glass-card">
+    <div class="tab-container">
+      @for (tab of tabs; track tab.path) {
+        <a
+          [routerLink]="tab.path"
+          routerLinkActive="active"
+          class="tab-item"
+        >
+          <span class="tab-icon">{{ tab.icon }}</span>
+          <span class="tab-label">{{ tab.label }}</span>
+        </a>
+      }
+    </div>
+  </nav>
+
+  <!-- Content Area -->
+  <main class="main-content">
+    <router-outlet />
+  </main>
+</div>
