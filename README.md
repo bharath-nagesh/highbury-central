@@ -1,59 +1,137 @@
-# ArsenalTracker
+# Arsenal FC Tracker
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.4.
+A super modern web application built with Angular to track Arsenal FC related content. Features a stunning Apple Liquid Glass inspired design with glassmorphism effects.
 
-## Development server
+## Features
 
-To start a local development server, run:
+### 1. News Tab 📰
+- Latest Arsenal FC news feed
+- Beautiful card-based layout with images
+- Category badges for different news types
+- Author information and publish dates
+
+### 2. Fixtures Tab ⚽
+- **Live Match Display**: Real-time score updates with animated indicators
+- **Upcoming Fixtures**: View all scheduled matches with date, time, and venue
+- **Previous Results**: Scrollable section to review past match results with win/loss/draw indicators
+- Color-coded result badges (Green for wins, Yellow for draws, Red for losses)
+
+### 3. Transfers Tab 🔄
+- **Incoming Transfers**: Track potential signings with probability indicators
+- **Outgoing Transfers**: Monitor players leaving the club
+- Player information including age, position, and current club
+- Transfer fee and deal status (Rumoured, In Progress, Completed)
+- Visual probability bars showing likelihood of transfers
+
+### 4. Stats Tab 📊
+- **Match Statistics**: Detailed comparison between Arsenal and opponents
+- **Top Performers**: Player ratings with goals and assists
+- **Visual Data Representation**: Beautiful progress bars and comparison charts
+- Statistics include: possession, shots, passes, tackles, fouls, cards, and more
+
+## Design Features
+
+- **Glassmorphism UI**: Apple Liquid Glass inspired design with backdrop blur effects
+- **Arsenal Branding**: Official Arsenal FC colors (Red #EF0107, Gold #9C824A, Navy #023474)
+- **Animated Gradients**: Smooth background animations for enhanced visual appeal
+- **Responsive Design**: Fully optimized for desktop, tablet, and mobile devices
+- **Smooth Transitions**: Fluid animations throughout the application
+- **Floating Elements**: Liquid glass effect with subtle floating animations
+
+## Tech Stack
+
+- **Angular 19**: Latest version with standalone components
+- **TypeScript**: Type-safe development
+- **SCSS**: Advanced styling with mixins and CSS variables
+- **Modern CSS**: Backdrop filters, gradients, animations, and glassmorphism
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm (v9 or higher)
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone <repository-url>
+cd highbury-central
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+### Development Server
+
+To start a local development server:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Navigate to `http://localhost:4200/` in your browser. The application will automatically reload when you modify source files.
 
-## Code scaffolding
+### Build
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+To build the project for production:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+## Project Structure
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── news/          # News feed component
+│   │   ├── fixtures/      # Fixtures and results component
+│   │   ├── transfers/     # Transfer tracker component
+│   │   └── stats/         # Match statistics component
+│   ├── app.ts             # Root component
+│   ├── app.routes.ts      # Application routing
+│   └── app.scss           # Main component styles
+├── styles.scss            # Global styles and design system
+└── index.html             # Application entry point
 ```
 
-## Running end-to-end tests
+## Design System
 
-For end-to-end (e2e) testing, run:
+The application uses a comprehensive design system with:
 
-```bash
-ng e2e
-```
+- **CSS Variables**: Consistent theming with Arsenal brand colors
+- **Glass Effect Mixins**: Reusable glassmorphism components
+- **Utility Classes**: Pre-built classes for common patterns
+- **Animation Library**: Smooth transitions and keyframe animations
+- **Responsive Grid System**: Mobile-first responsive layouts
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Future Enhancements
 
-## Additional Resources
+- Integration with live football data APIs
+- User authentication and personalization
+- Push notifications for live match updates
+- Social sharing features
+- Player comparison tools
+- Historical statistics and analytics
+- Match highlights and video integration
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Development Notes
+
+This project was generated using Angular CLI version 21.0.4.
+
+For more information on Angular CLI commands, visit the [Angular CLI Documentation](https://angular.dev/tools/cli).
+
+## License
+
+This project is for demonstration purposes.
+
+---
+
+Built with ❤️ for Arsenal FC fans worldwide. COYG! 🔴⚪
