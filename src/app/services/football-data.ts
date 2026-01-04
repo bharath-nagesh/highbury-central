@@ -171,6 +171,7 @@ export class FootballData {
   }
 
   // Mock data methods (fallback when API is not available)
+  // Data reflects 2025-26 Premier League season (January 2026)
   private getMockMatches(): Match[] {
     return [
       {
@@ -190,7 +191,7 @@ export class FootballData {
         id: 2,
         homeTeam: 'Liverpool',
         awayTeam: 'Arsenal',
-        date: new Date('2026-01-08T20:00:00'),
+        date: new Date('2026-01-11T17:30:00'),
         competition: 'Premier League',
         venue: 'Anfield',
         status: 'upcoming',
@@ -200,27 +201,38 @@ export class FootballData {
       {
         id: 3,
         homeTeam: 'Arsenal',
-        awayTeam: 'Chelsea',
-        date: new Date('2026-01-12T14:00:00'),
+        awayTeam: 'Wolverhampton',
+        date: new Date('2026-01-18T15:00:00'),
         competition: 'Premier League',
         venue: 'Emirates Stadium',
         status: 'upcoming',
         homeLogo: '🔴',
-        awayLogo: '🔵'
+        awayLogo: '🟠'
       },
       {
         id: 4,
         homeTeam: 'Arsenal',
-        awayTeam: 'Newcastle United',
-        date: new Date('2026-01-15T19:45:00'),
+        awayTeam: 'Manchester United',
+        date: new Date('2026-01-25T16:30:00'),
         competition: 'FA Cup',
         venue: 'Emirates Stadium',
         status: 'upcoming',
         homeLogo: '🔴',
-        awayLogo: '⚫'
+        awayLogo: '🔴'
       },
       {
         id: 5,
+        homeTeam: 'Brentford',
+        awayTeam: 'Arsenal',
+        date: new Date('2026-02-01T14:00:00'),
+        competition: 'Premier League',
+        venue: 'Gtech Community Stadium',
+        status: 'upcoming',
+        homeLogo: '🔴',
+        awayLogo: '🔴'
+      },
+      {
+        id: 6,
         homeTeam: 'Arsenal',
         awayTeam: 'Brighton',
         homeScore: 3,
@@ -233,12 +245,12 @@ export class FootballData {
         awayLogo: '🔵'
       },
       {
-        id: 6,
+        id: 7,
         homeTeam: 'Tottenham',
         awayTeam: 'Arsenal',
         homeScore: 1,
-        awayScore: 2,
-        date: new Date('2025-12-28T12:30:00'),
+        awayScore: 3,
+        date: new Date('2025-12-29T12:30:00'),
         competition: 'Premier League',
         venue: 'Tottenham Hotspur Stadium',
         status: 'completed',
@@ -246,38 +258,38 @@ export class FootballData {
         awayLogo: '🔴'
       },
       {
-        id: 7,
+        id: 8,
         homeTeam: 'Arsenal',
-        awayTeam: 'Aston Villa',
+        awayTeam: 'Ipswich Town',
         homeScore: 2,
         awayScore: 0,
-        date: new Date('2025-12-22T15:00:00'),
+        date: new Date('2025-12-27T20:00:00'),
         competition: 'Premier League',
         venue: 'Emirates Stadium',
         status: 'completed',
         homeLogo: '🔴',
-        awayLogo: '🟣'
-      },
-      {
-        id: 8,
-        homeTeam: 'Manchester United',
-        awayTeam: 'Arsenal',
-        homeScore: 0,
-        awayScore: 1,
-        date: new Date('2025-12-18T20:00:00'),
-        competition: 'Premier League',
-        venue: 'Old Trafford',
-        status: 'completed',
-        homeLogo: '🔴',
-        awayLogo: '🔴'
+        awayLogo: '🔵'
       },
       {
         id: 9,
+        homeTeam: 'Crystal Palace',
+        awayTeam: 'Arsenal',
+        homeScore: 1,
+        awayScore: 2,
+        date: new Date('2025-12-21T15:00:00'),
+        competition: 'Premier League',
+        venue: 'Selhurst Park',
+        status: 'completed',
+        homeLogo: '🦅',
+        awayLogo: '🔴'
+      },
+      {
+        id: 10,
         homeTeam: 'Arsenal',
         awayTeam: 'Everton',
-        homeScore: 4,
+        homeScore: 1,
         awayScore: 1,
-        date: new Date('2025-12-14T19:30:00'),
+        date: new Date('2025-12-14T17:30:00'),
         competition: 'Premier League',
         venue: 'Emirates Stadium',
         status: 'completed',
