@@ -1,0 +1,20 @@
+{
+  "/api/football": {
+    "target": "https://api-football-v1.p.rapidapi.com/v3",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/football": ""
+    }
+  },
+  "/api/news": {
+    "target": "https://newsapi.org/v2",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/api/news": ""
+    }
+  }
+}
