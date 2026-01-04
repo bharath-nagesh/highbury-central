@@ -28,10 +28,9 @@ export class Fixtures implements OnInit {
   loading = true;
 
   ngOnInit() {
-    setTimeout(() => {
-      this.loadMatches();
-      this.loading = false;
-    }, 800);
+    // Load mock data immediately
+    this.loadMatches();
+    this.loading = false;
   }
 
   loadMatches() {

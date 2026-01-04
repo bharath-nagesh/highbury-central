@@ -29,10 +29,9 @@ export class Transfers implements OnInit {
   loading = true;
 
   ngOnInit() {
-    setTimeout(() => {
-      this.loadTransfers();
-      this.loading = false;
-    }, 800);
+    // Load mock data immediately
+    this.loadTransfers();
+    this.loading = false;
   }
 
   loadTransfers() {

@@ -47,10 +47,9 @@ export class Stats implements OnInit {
   loading = true;
 
   ngOnInit() {
-    setTimeout(() => {
-      this.loadStats();
-      this.loading = false;
-    }, 800);
+    // Load mock data immediately
+    this.loadStats();
+    this.loading = false;
   }
 
   loadStats() {

@@ -22,11 +22,9 @@ export class News implements OnInit {
   loading = true;
 
   ngOnInit() {
-    // Simulate API call with timeout
-    setTimeout(() => {
-      this.newsItems = this.getMockNews();
-      this.loading = false;
-    }, 800);
+    // Load mock data immediately
+    this.newsItems = this.getMockNews();
+    this.loading = false;
   }
 
   getMockNews(): NewsItem[] {
