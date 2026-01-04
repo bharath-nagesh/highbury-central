@@ -1,18 +1,6 @@
 # Arsenal FC Tracker
 
-A super modern web application built with Angular to track Arsenal FC with **REAL-TIME DATA** from live football APIs. Features a stunning Apple Liquid Glass inspired design with glassmorphism effects.
-
-## 🔴⚪ Now with Live Data!
-
-This app connects to real football data APIs to bring you:
-- ✅ **Live match scores** updated every 15 seconds via API-Football
-- ✅ **Real fixtures and results** from the Premier League and cup competitions
-- ✅ **Actual Arsenal news** from 100+ news sources via NewsAPI
-- ✅ **Detailed match statistics** from real games with possession, shots, passes, and more
-
-**No more mock data - this is the real deal!** 🎉
-
-👉 See **[API_SETUP.md](./API_SETUP.md)** for a 5-minute setup guide to get your free API keys.
+A super modern web application built with Angular to track Arsenal FC. Features a stunning Apple Liquid Glass inspired design with glassmorphism effects and realistic demo data for the 2025-26 season.
 
 ## Features
 

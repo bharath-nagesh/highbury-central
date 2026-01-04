@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, catchError, map, tap, switchMap } from 'rxjs';
-import { environment } from '../../environments/environment.development';
+import { Observable, of } from 'rxjs';
 
 export interface Match {
   id: number;
@@ -92,352 +90,38 @@ export interface MatchStats {
   providedIn: 'root',
 })
 export class FootballData {
-  // Cache for API responses
-  private matchesCache: { data: Match[], timestamp: number } | null = null;
-  private newsCache: { data: NewsItem[], timestamp: number } | null = null;
-  private statsCache: { data: MatchStats, timestamp: number } | null = null;
-  private transfersCache: { data: Transfer[], timestamp: number } | null = null;
-
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   /**
-   * Get API-Football headers for RapidAPI
-   */
-  private getApiFootballHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'X-RapidAPI-Key': environment.apiFootball.apiKey,
-      'X-RapidAPI-Host': environment.apiFootball.apiHost
-    });
-  }
-
-  /**
-   * Get Arsenal matches (fixtures and results) from API-Football
+   * Get Arsenal matches (fixtures and results)
    */
   getMatches(): Observable<Match[]> {
-    // Check cache first
-    if (this.matchesCache && (Date.now() - this.matchesCache.timestamp) < environment.cache.matchesDuration) {
-      console.log('📦 Using cached matches data');
-      return of(this.matchesCache.data);
-    }
-
-    console.log('🌐 Fetching live matches from API-Football...');
-
-    // Fetch last 10 and next 10 Arsenal matches
-    return this.http.get<any>(`${environment.apiFootball.baseUrl}/fixtures`, {
-      headers: this.getApiFootballHeaders(),
-      params: {
-        team: environment.apiFootball.arsenalTeamId.toString(),
-        last: '10'
-      }
-    }).pipe(
-      switchMap(lastMatchesResponse => {
-        // Fetch next matches
-        return this.http.get<any>(`${environment.apiFootball.baseUrl}/fixtures`, {
-          headers: this.getApiFootballHeaders(),
-          params: {
-            team: environment.apiFootball.arsenalTeamId.toString(),
-            next: '10'
-          }
-        }).pipe(
-          map(nextMatchesResponse => {
-            console.log('✅ API-Football matches received');
-            const allMatches = [
-              ...(lastMatchesResponse.response || []),
-              ...(nextMatchesResponse.response || [])
-            ];
-            return this.transformApiFootballMatches(allMatches);
-          })
-        );
-      }),
-      tap(matches => {
-        // Cache the results
-        this.matchesCache = { data: matches, timestamp: Date.now() };
-        console.log('💾 Matches cached');
-      }),
-      catchError(error => {
-        console.error('❌ API-Football error, using fallback data:', error);
-        console.error('Error details:', error.message);
-        return of(this.getMockMatches());
-      })
-    );
+    return of(this.getMockMatches());
   }
 
   /**
-   * Get Arsenal news from NewsAPI
+   * Get Arsenal news
    */
   getNews(): Observable<NewsItem[]> {
-    // Check cache first
-    if (this.newsCache && (Date.now() - this.newsCache.timestamp) < environment.cache.newsDuration) {
-      console.log('📦 Using cached news data');
-      return of(this.newsCache.data);
-    }
-
-    console.log('🌐 Fetching live news from NewsAPI...');
-
-    // Fetch news from last 7 days
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-    return this.http.get<any>(`${environment.newsApi.baseUrl}/everything`, {
-      params: {
-        q: 'Arsenal FC',
-        apiKey: environment.newsApi.apiKey,
-        language: 'en',
-        sortBy: 'publishedAt',
-        from: oneWeekAgo.toISOString().split('T')[0],
-        pageSize: '20'
-      }
-    }).pipe(
-      map(response => {
-        console.log('✅ NewsAPI response received');
-        return this.transformNewsApiArticles(response.articles || []);
-      }),
-      tap(news => {
-        // Cache the results
-        this.newsCache = { data: news, timestamp: Date.now() };
-        console.log('💾 News cached');
-      }),
-      catchError(error => {
-        console.error('❌ NewsAPI error, using fallback data:', error);
-        console.error('Error details:', error.message);
-        return of(this.getMockNews());
-      })
-    );
+    return of(this.getMockNews());
   }
 
   /**
    * Get transfer rumors and completed transfers
-   * Note: Real-time transfer data requires premium APIs
    */
   getTransfers(): Observable<Transfer[]> {
-    // Check cache first
-    if (this.transfersCache && (Date.now() - this.transfersCache.timestamp) < environment.cache.transfersDuration) {
-      console.log('📦 Using cached transfers data');
-      return of(this.transfersCache.data);
-    }
-
-    console.log('ℹ️ Transfers: Using curated data (real-time transfer data requires premium API)');
-
-    // Using curated data as real-time transfer APIs are expensive
-    const transfers = this.getMockTransfers();
-    this.transfersCache = { data: transfers, timestamp: Date.now() };
-    return of(transfers);
+    return of(this.getMockTransfers());
   }
 
   /**
-   * Get latest match statistics from API-Football
+   * Get latest match statistics
    */
   getMatchStats(): Observable<MatchStats> {
-    // Check cache first
-    if (this.statsCache && (Date.now() - this.statsCache.timestamp) < environment.cache.statsDuration) {
-      console.log('📦 Using cached stats data');
-      return of(this.statsCache.data);
-    }
-
-    console.log('🌐 Fetching live match stats from API-Football...');
-
-    // Get the most recent Arsenal match
-    return this.http.get<any>(`${environment.apiFootball.baseUrl}/fixtures`, {
-      headers: this.getApiFootballHeaders(),
-      params: {
-        team: environment.apiFootball.arsenalTeamId.toString(),
-        last: '1'
-      }
-    }).pipe(
-      switchMap(response => {
-        if (response.response && response.response.length > 0) {
-          const match = response.response[0];
-          console.log('✅ Latest match found:', match.teams.home.name, 'vs', match.teams.away.name);
-
-          // Fetch detailed statistics for this match
-          return this.http.get<any>(`${environment.apiFootball.baseUrl}/fixtures/statistics`, {
-            headers: this.getApiFootballHeaders(),
-            params: {
-              fixture: match.fixture.id.toString()
-            }
-          }).pipe(
-            map(statsResponse => {
-              console.log('✅ Match statistics received');
-              return this.transformApiFootballStats(statsResponse.response, match);
-            })
-          );
-        }
-        throw new Error('No recent matches found');
-      }),
-      tap(stats => {
-        // Cache the results
-        this.statsCache = { data: stats, timestamp: Date.now() };
-        console.log('💾 Stats cached');
-      }),
-      catchError(error => {
-        console.error('❌ API-Football stats error, using fallback data:', error);
-        console.error('Error details:', error.message);
-        return of(this.getMockStats());
-      })
-    );
+    return of(this.getMockStats());
   }
 
-  /**
-   * Transform API-Football matches to our Match interface
-   */
-  private transformApiFootballMatches(apiMatches: any[]): Match[] {
-    return apiMatches.map((match) => {
-      // Determine match status
-      let status: 'upcoming' | 'live' | 'completed' = 'upcoming';
-      const statusShort = match.fixture.status.short;
-
-      if (statusShort === 'FT' || statusShort === 'AET' || statusShort === 'PEN') {
-        status = 'completed';
-      } else if (statusShort === '1H' || statusShort === 'HT' || statusShort === '2H' ||
-                 statusShort === 'ET' || statusShort === 'P' || statusShort === 'LIVE') {
-        status = 'live';
-      }
-
-      return {
-        id: match.fixture.id,
-        homeTeam: match.teams.home.name,
-        awayTeam: match.teams.away.name,
-        homeScore: match.goals.home,
-        awayScore: match.goals.away,
-        date: new Date(match.fixture.date),
-        competition: match.league.name,
-        venue: match.fixture.venue?.name || 'TBD',
-        status: status,
-        homeLogo: match.teams.home.logo,
-        awayLogo: match.teams.away.logo
-      };
-    });
-  }
-
-  /**
-   * Transform NewsAPI articles to our NewsItem interface
-   */
-  private transformNewsApiArticles(articles: any[]): NewsItem[] {
-    return articles
-      .filter(article => article.title && article.title !== '[Removed]')
-      .slice(0, 10)
-      .map((article, index) => ({
-        id: index + 1,
-        title: article.title,
-        excerpt: article.description || article.content?.substring(0, 200) || 'No description available',
-        author: article.author || article.source?.name || 'Unknown',
-        publishedAt: new Date(article.publishedAt),
-        category: this.categorizeNews(article.title + ' ' + (article.description || '')),
-        imageUrl: article.urlToImage || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
-        url: article.url
-      }));
-  }
-
-  /**
-   * Categorize news based on content
-   */
-  private categorizeNews(content: string): string {
-    const lowerContent = content.toLowerCase();
-    if (lowerContent.includes('match') || lowerContent.includes(' vs ') || lowerContent.includes('score')) return 'Match Report';
-    if (lowerContent.includes('transfer') || lowerContent.includes('sign')) return 'Transfer News';
-    if (lowerContent.includes('injury') || lowerContent.includes('injured')) return 'Injury News';
-    if (lowerContent.includes('academy') || lowerContent.includes('youth')) return 'Academy';
-    if (lowerContent.includes('women')) return 'Women\'s Team';
-    return 'News';
-  }
-
-  /**
-   * Transform API-Football statistics to our MatchStats interface
-   */
-  private transformApiFootballStats(statsResponse: any[], matchData: any): MatchStats {
-    if (!statsResponse || statsResponse.length < 2) {
-      return this.getMockStats();
-    }
-
-    const arsenalStats = statsResponse.find(s => s.team.id === environment.apiFootball.arsenalTeamId);
-    const opponentStats = statsResponse.find(s => s.team.id !== environment.apiFootball.arsenalTeamId);
-
-    if (!arsenalStats || !opponentStats) {
-      return this.getMockStats();
-    }
-
-    const getStatValue = (stats: any[], type: string): number => {
-      const stat = stats.find((s: any) => s.type === type);
-      if (!stat || stat.value === null) return 0;
-
-      // Handle percentage values
-      if (typeof stat.value === 'string' && stat.value.includes('%')) {
-        return parseInt(stat.value);
-      }
-      return Number(stat.value) || 0;
-    };
-
-    return {
-      matchInfo: {
-        opponent: opponentStats.team.name,
-        result: `${matchData.goals.home}-${matchData.goals.away}`,
-        date: new Date(matchData.fixture.date),
-        competition: matchData.league.name,
-        venue: matchData.fixture.venue?.name || 'Unknown'
-      },
-      arsenalStats: {
-        possession: getStatValue(arsenalStats.statistics, 'Ball Possession'),
-        shots: getStatValue(arsenalStats.statistics, 'Total Shots'),
-        shotsOnTarget: getStatValue(arsenalStats.statistics, 'Shots on Goal'),
-        passes: getStatValue(arsenalStats.statistics, 'Total passes'),
-        passAccuracy: getStatValue(arsenalStats.statistics, 'Passes %'),
-        tackles: getStatValue(arsenalStats.statistics, 'Total Tackles'),
-        fouls: getStatValue(arsenalStats.statistics, 'Fouls'),
-        corners: getStatValue(arsenalStats.statistics, 'Corner Kicks'),
-        offsides: getStatValue(arsenalStats.statistics, 'Offsides'),
-        yellowCards: getStatValue(arsenalStats.statistics, 'Yellow Cards'),
-        redCards: getStatValue(arsenalStats.statistics, 'Red Cards')
-      },
-      opponentStats: {
-        possession: getStatValue(opponentStats.statistics, 'Ball Possession'),
-        shots: getStatValue(opponentStats.statistics, 'Total Shots'),
-        shotsOnTarget: getStatValue(opponentStats.statistics, 'Shots on Goal'),
-        passes: getStatValue(opponentStats.statistics, 'Total passes'),
-        passAccuracy: getStatValue(opponentStats.statistics, 'Passes %'),
-        tackles: getStatValue(opponentStats.statistics, 'Total Tackles'),
-        fouls: getStatValue(opponentStats.statistics, 'Fouls'),
-        corners: getStatValue(opponentStats.statistics, 'Corner Kicks'),
-        offsides: getStatValue(opponentStats.statistics, 'Offsides'),
-        yellowCards: getStatValue(opponentStats.statistics, 'Yellow Cards'),
-        redCards: getStatValue(opponentStats.statistics, 'Red Cards')
-      },
-      topPerformers: [
-        {
-          name: 'Bukayo Saka',
-          number: 7,
-          position: 'RW',
-          goals: 1,
-          assists: 1,
-          rating: 9.2,
-          imageUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&q=80'
-        },
-        {
-          name: 'Martin Ødegaard',
-          number: 8,
-          position: 'CAM',
-          goals: 1,
-          assists: 0,
-          rating: 8.8,
-          imageUrl: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=400&q=80'
-        },
-        {
-          name: 'William Saliba',
-          number: 2,
-          position: 'CB',
-          goals: 0,
-          assists: 0,
-          rating: 8.5,
-          imageUrl: 'https://images.unsplash.com/photo-1592913665398-c89e6d0a23c5?w=400&q=80'
-        }
-      ]
-    };
-  }
-
-  // ========== FALLBACK MOCK DATA ==========
-  // These methods provide fallback data when APIs are unavailable or not configured
-
+  // Mock data for 2025-26 Premier League season (January 2026)
   private getMockMatches(): Match[] {
-    console.warn('⚠️ Using mock matches data. Configure API keys in src/environments/environment.development.ts for real-time data.');
     return [
       {
         id: 1,
@@ -475,6 +159,28 @@ export class FootballData {
         awayLogo: '🟠'
       },
       {
+        id: 4,
+        homeTeam: 'Arsenal',
+        awayTeam: 'Manchester United',
+        date: new Date('2026-01-25T16:30:00'),
+        competition: 'FA Cup',
+        venue: 'Emirates Stadium',
+        status: 'upcoming',
+        homeLogo: '🔴',
+        awayLogo: '🔴'
+      },
+      {
+        id: 5,
+        homeTeam: 'Brentford',
+        awayTeam: 'Arsenal',
+        date: new Date('2026-02-01T14:00:00'),
+        competition: 'Premier League',
+        venue: 'Gtech Community Stadium',
+        status: 'upcoming',
+        homeLogo: '🔴',
+        awayLogo: '🔴'
+      },
+      {
         id: 6,
         homeTeam: 'Arsenal',
         awayTeam: 'Brighton',
@@ -499,18 +205,56 @@ export class FootballData {
         status: 'completed',
         homeLogo: '⚪',
         awayLogo: '🔴'
+      },
+      {
+        id: 8,
+        homeTeam: 'Arsenal',
+        awayTeam: 'Ipswich Town',
+        homeScore: 2,
+        awayScore: 0,
+        date: new Date('2025-12-27T20:00:00'),
+        competition: 'Premier League',
+        venue: 'Emirates Stadium',
+        status: 'completed',
+        homeLogo: '🔴',
+        awayLogo: '🔵'
+      },
+      {
+        id: 9,
+        homeTeam: 'Crystal Palace',
+        awayTeam: 'Arsenal',
+        homeScore: 1,
+        awayScore: 2,
+        date: new Date('2025-12-21T15:00:00'),
+        competition: 'Premier League',
+        venue: 'Selhurst Park',
+        status: 'completed',
+        homeLogo: '🦅',
+        awayLogo: '🔴'
+      },
+      {
+        id: 10,
+        homeTeam: 'Arsenal',
+        awayTeam: 'Everton',
+        homeScore: 1,
+        awayScore: 1,
+        date: new Date('2025-12-14T17:30:00'),
+        competition: 'Premier League',
+        venue: 'Emirates Stadium',
+        status: 'completed',
+        homeLogo: '🔴',
+        awayLogo: '🔵'
       }
     ];
   }
 
   private getMockNews(): NewsItem[] {
-    console.warn('⚠️ Using mock news data. Configure API keys in src/environments/environment.development.ts for real-time data.');
     return [
       {
         id: 1,
         title: 'Arsenal Extend Unbeaten Run with Dominant Victory',
-        excerpt: 'The Gunners showcased their title credentials with a commanding performance at the Emirates Stadium.',
-        author: 'Arsenal FC',
+        excerpt: 'The Gunners showcased their title credentials with a commanding performance at the Emirates Stadium, extending their unbeaten streak to 10 matches.',
+        author: 'Charles Watts',
         publishedAt: new Date('2026-01-03'),
         category: 'Match Report',
         imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=80',
@@ -519,11 +263,51 @@ export class FootballData {
       {
         id: 2,
         title: 'Arteta Praises Squad Depth After Rotation Success',
-        excerpt: 'Manager Mikel Arteta highlighted the importance of squad depth as Arsenal continue to compete on multiple fronts.',
-        author: 'Arsenal FC',
+        excerpt: 'Manager Mikel Arteta highlighted the importance of squad depth as Arsenal continue to compete on multiple fronts this season.',
+        author: 'James Benge',
         publishedAt: new Date('2026-01-02'),
         category: 'News',
         imageUrl: 'https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=800&q=80',
+        url: 'https://www.arsenal.com'
+      },
+      {
+        id: 3,
+        title: 'Academy Starlet Impresses in Training',
+        excerpt: 'Young talent continues to emerge from Hale End as another academy graduate catches the eye of the first-team coaching staff.',
+        author: 'Jeorge Bird',
+        publishedAt: new Date('2026-01-02'),
+        category: 'Academy',
+        imageUrl: 'https://images.unsplash.com/photo-1551958219-acbc608c6377?w=800&q=80',
+        url: 'https://www.arsenal.com'
+      },
+      {
+        id: 4,
+        title: 'Injury Update: Key Players Return to Training',
+        excerpt: 'Positive news on the injury front as several first-team regulars make their return to full training ahead of crucial fixtures.',
+        author: 'Arsenal Medical Team',
+        publishedAt: new Date('2026-01-01'),
+        category: 'Injury News',
+        imageUrl: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80',
+        url: 'https://www.arsenal.com'
+      },
+      {
+        id: 5,
+        title: 'Arsenal Women Continue Perfect League Form',
+        excerpt: 'The Arsenal Women\'s team maintained their 100% record with another impressive display in the Women\'s Super League.',
+        author: 'Tom Garry',
+        publishedAt: new Date('2025-12-31'),
+        category: 'Women\'s Team',
+        imageUrl: 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=800&q=80',
+        url: 'https://www.arsenal.com'
+      },
+      {
+        id: 6,
+        title: 'Emirates Stadium to Host Charity Match',
+        excerpt: 'Arsenal FC announces special charity fixture featuring club legends, with proceeds going to local community initiatives.',
+        author: 'Arsenal Foundation',
+        publishedAt: new Date('2025-12-30'),
+        category: 'Community',
+        imageUrl: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80',
         url: 'https://www.arsenal.com'
       }
     ];
@@ -559,6 +343,32 @@ export class FootballData {
       },
       {
         id: 3,
+        playerName: 'Benjamin Sesko',
+        position: 'Striker',
+        age: 21,
+        fromClub: 'RB Leipzig',
+        toClub: 'Arsenal',
+        fee: '£55M',
+        status: 'rumour',
+        probability: 55,
+        type: 'incoming',
+        imageUrl: 'https://images.unsplash.com/photo-1592913665398-c89e6d0a23c5?w=400&q=80'
+      },
+      {
+        id: 4,
+        playerName: 'Jeremie Frimpong',
+        position: 'Right Back',
+        age: 23,
+        fromClub: 'Bayer Leverkusen',
+        toClub: 'Arsenal',
+        fee: '£35M',
+        status: 'rumour',
+        probability: 45,
+        type: 'incoming',
+        imageUrl: 'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=400&q=80'
+      },
+      {
+        id: 5,
         playerName: 'Eddie Nketiah',
         position: 'Striker',
         age: 25,
@@ -569,12 +379,38 @@ export class FootballData {
         probability: 75,
         type: 'outgoing',
         imageUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&q=80'
+      },
+      {
+        id: 6,
+        playerName: 'Kieran Tierney',
+        position: 'Left Back',
+        age: 27,
+        fromClub: 'Arsenal',
+        toClub: 'Newcastle United',
+        fee: '£25M',
+        status: 'rumour',
+        probability: 60,
+        type: 'outgoing',
+        imageUrl: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=400&q=80'
+      },
+      {
+        id: 7,
+        playerName: 'Emile Smith Rowe',
+        position: 'Midfielder',
+        age: 24,
+        fromClub: 'Arsenal',
+        toClub: 'Fulham',
+        fee: '£35M',
+        status: 'completed',
+        probability: 100,
+        type: 'outgoing',
+        date: new Date('2025-12-28'),
+        imageUrl: 'https://images.unsplash.com/photo-1592913665398-c89e6d0a23c5?w=400&q=80'
       }
     ];
   }
 
   private getMockStats(): MatchStats {
-    console.warn('⚠️ Using mock stats data. Configure API keys in src/environments/environment.development.ts for real-time data.');
     return {
       matchInfo: {
         opponent: 'Manchester City',
@@ -627,6 +463,24 @@ export class FootballData {
           assists: 0,
           rating: 8.8,
           imageUrl: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?w=400&q=80'
+        },
+        {
+          name: 'William Saliba',
+          number: 2,
+          position: 'CB',
+          goals: 0,
+          assists: 0,
+          rating: 8.5,
+          imageUrl: 'https://images.unsplash.com/photo-1592913665398-c89e6d0a23c5?w=400&q=80'
+        },
+        {
+          name: 'Declan Rice',
+          number: 41,
+          position: 'CDM',
+          goals: 0,
+          assists: 1,
+          rating: 8.3,
+          imageUrl: 'https://images.unsplash.com/photo-1606925797300-0b35e9d1794e?w=400&q=80'
         }
       ]
     };
